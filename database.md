@@ -1,3 +1,31 @@
+* Configuration files are at:
+
+  /etc/my.cnf
+  /etc/mysql/my.cnf
+  /var/lib/mysql/my.cnf
+
+
+* MySql command line:
+  mysql -u root -p -h 127.0.0.1
+
+* Features
+  show variables  like 'have%';  
+  
+* Version of MySQL
+  SHOW VARIABLES LIKE 'version';
+
+* List All Databases
+  show schemas;
+  show databases;
+
+* List all tables in a DB
+ use <DB name>  
+ show tables;
+
+*  Show current status of MySql
+   status;
+   
+
 * Create database `create schema <database_name>`
 * Delete/Remove database `drop schema <database_name>`
 * Create a table 'company_info' for the database 'mycompanies'
@@ -18,12 +46,6 @@
 
 	ALTER TABLE `mycompanies`.`company_info` 
 	CHANGE COLUMN `idCompany_name` `idCompany_name` VARCHAR(40) NOT NULL ;
-	
-* Version of MySQL
-	SHOW VARIABLES LIKE 'version';
-	
-* MySql command line:
- 	mysql -u root -p -h 127.0.0.1
 
 * Basic commands:
  	create database employees;
@@ -134,7 +156,7 @@ where e.emp_no IN (select s.emp_no from salaries s where s.salary > 140000);
 select e.emp_no, e.first_name, e.last_name 
 from employees e 
 where e.emp_no IN (select s.emp_no from salaries s 
-				   where s.salary > 140000) 
+				   where s.salary > 140000)
 union  
 select e.emp_no, e.first_name, e.last_name 
 from employees e 
@@ -171,6 +193,44 @@ select first_name from employees where exists(select from_date from salaries whe
 16 rows in set (1.63 sec)
 
 How to find the salaries for these 16 records?
+This is a wrong use case for Exists.
+
+* ANY/ALL 
+
+The ANY and ALL operators are used with a WHERE or HAVING clause.
+The ANY operator returns true if any of the subquery values meet the condition.
+The ALL operator returns true if all of the subquery values meet the condition.
+
+select * from employees e, salaries s where e.emp_no=ANY(select s.emp_no from salaries where salary>150000)
+
+* SELECT INTO
+Copy all columns into a new table:
+SELECT *
+INTO newtable [IN externaldb]
+FROM oldtable
+WHERE condition; 
+
+Copy only some columns into a new table:
+SELECT column1, column2, column3, ...
+INTO newtable [IN externaldb]
+FROM oldtable
+WHERE condition; 
+
+* SQL FOREIGN KEY Constraint
+
+CREATE TABLE Orders (
+    OrderID int NOT NULL,
+    OrderNumber int NOT NULL,
+    PersonID int,
+    PRIMARY KEY (OrderID),
+    FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
+);
+
+
+* View
+
+create view top_earning_emp as select *  from employees e where e.emp_no=ANY(select s.emp_no from salaries s where salary>150000)
+
 
 phpcademy.org 
 thenewboston.org
